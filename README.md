@@ -68,7 +68,7 @@ As an input, the snakemake file takes a config file where you can set the path t
 
 ### Samples
 
-`Samples.tsv` should be a comma seperated file consisting of four columns—barcode_id(barcode id outputted by Minion or can be same as sample_id in case you don't have barcode information),sample_id (genome ID—this should be the prefix that is extracted from your illumina fastq reads), illumina_r1 (forward read 1), illumina_r2 (reverse read 2).
+`samples.tsv` should be a comma seperated file consisting of four columns—barcode_id(barcode id outputted by Minion or can be same as sample_id in case you don't have barcode information),sample_id (genome ID—this should be the prefix that is extracted from your illumina fastq reads), illumina_r1 (forward read 1), illumina_r2 (reverse read 2).
 
 You can create sample.tsv file using the following for loop. It assumes that you are running for loop from the folder that contains your illumina short reads.
   
