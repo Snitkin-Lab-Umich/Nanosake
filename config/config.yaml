@@ -4,7 +4,8 @@
 # Don't change this
 samples: config/samples.tsv
 
-# Absolute path to your nanopore long reads and illumina short reads folders 
+# Change this to the absolute path of your 
+# nanopore long reads and illumina short reads folders 
 long_reads: /nfs/turbo/umms-esnitkin/Project_ONT/Analysis/2021_11_30_ONT_snakemake/test_data/guppy_demultiplex/20210107_2213_MN35107_FAO13840_83e8e224
 short_reads: /nfs/esnitkin/Project_KPC_LTACH/Sequence_data/fastq/2017_12_01_KPC_HGT/Final_fastq
 
