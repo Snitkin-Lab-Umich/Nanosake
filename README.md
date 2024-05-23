@@ -43,7 +43,7 @@ git clone https://github.com/Snitkin-Lab-Umich/Nanosake.git
 
 ```
 
-> Ensure you have succesfully cloned Nanosake. Type `ls` and you should see the newly created directory **_Nanosake_**. Move to the newly created directory.
+> Ensure you have successfully cloned Nanosake. Type `ls` and you should see the newly created directory **_Nanosake_**. Move to the newly created directory.
 
 ```
 
