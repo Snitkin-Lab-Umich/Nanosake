@@ -43,7 +43,13 @@ git clone https://github.com/Snitkin-Lab-Umich/Nanosake.git
 
 ```
 
+> Ensure you have succesfully cloned Nanosake. Type `ls` and you should see the newly created directory **_Nanosake_**. Move to the newly created directory.
 
+```
+
+cd Nanosake
+
+```
 
 > Load bioinformatics, snakemake and singularity modules from Great Lakes modules.
 
