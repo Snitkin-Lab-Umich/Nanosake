@@ -91,6 +91,16 @@ for read1 in *_R1.fastq.gz; do sample_id=`echo $i | sed 's/_R1.fastq.gz//g'`; re
 
 ### Run Nanosake on a set of samples.
 
+
+
+>Preview the steps in Nanosake by performing a dryrun of the pipeline.
+
+```
+
+snakemake -s workflow/Nanosake.smk --dryrun -p
+
+```
+>Run the pipeline. 
 ```
 
 snakemake -s workflow/Nanosake.smk -p --use-conda -j 999 --cluster "sbatch -A {cluster.account} -p {cluster.partition} -N {cluster.nodes}  -t {cluster.walltime} -c {cluster.procs} --mem-per-cpu {cluster.pmem}" --conda-frontend conda --cluster-config config/cluster.json --configfile config/config.yaml --latency-wait 1000
@@ -100,8 +110,16 @@ snakemake -s workflow/Nanosake.smk -p --use-conda -j 999 --cluster "sbatch -A {c
 ![Alt text](./dag.svg)
 
 
-You can generate a MultiQC report on prokka, quast, busco and nanoplot foldersafter you finish running the snakemake workflow above.
+You can generate a MultiQC report on prokka, quast, busco and nanoplot folders after you finish running the snakemake workflow above.
 
+>Activate multiqc using conda.
+
+```
+
+conda activate /nfs/turbo/umms-esnitkin/conda/multiqc
+
+```
+> Change `multiqc_report_filename` to a file name of your choice and `multiqc_output_dir` to an output directory name of your choosing. Run multiqc on output folders specified above.
 ```
 
 multiqc --filename multiqc_report_filename -o multiqc_output_dir -f prokka/ busco/ quast/ nanoplot/
