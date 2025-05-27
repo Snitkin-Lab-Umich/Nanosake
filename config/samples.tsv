@@ -1,3 +1,0 @@
-barcode_id,sample_id,illumina_r1,illumina_r2
-barcode01,309a,309a_R1.fastq.gz,309a_R2.fastq.gz
-barcode02,311b,311b_R1.fastq.gz,311b_R2.fastq.gz
