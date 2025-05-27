@@ -1,11 +1,22 @@
-#!/bin/sh
+#!/bin/bash
+
 #SBATCH --job-name=Nanosake
-#SBATCH --mail-user=apirani@umich.edu
+#SBATCH --mail-user=youremail@umich.edu
 #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE
 #SBATCH --export=ALL
 #SBATCH --partition=standard
-#SBATCH --account=esnitkin0
-#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=1 --mem=5g --time=250:00:00
+#SBATCH --account=esnitkin1
+#SBATCH --nodes=1 --ntasks=1 --cpus-per-task=6 --mem=10g --time=12:15:00
 
-cd /nfs/turbo/umms-esnitkin/Project_ONT/Analysis/2021_11_30_ONT_snakemake/Nanosake
-snakemake -j 999 --cluster-config config/cluster.json --cluster "sbatch -A {cluster.account} -p {cluster.partition} -N {cluster.nodes}  -t {cluster.walltime} -c {cluster.procs} --mem-per-cpu {cluster.pmem}" --use-conda
+# Load necessary modules
+module load Bioinformatics snakemake singularity multiqc
+
+snakemake -s workflow/Nanosake.smk -p --use-singularity -j 999 --cluster "sbatch -A {cluster.account} -p {cluster.partition} -N {cluster.nodes}  -t {cluster.walltime} -c {cluster.procs} --mem-per-cpu {cluster.pmem} --output=slurm_out/slurm-%j.out" --cluster-config config/cluster.json --configfile config/config.yaml --latency-wait 1000 --nolock 
+
+# Extract prefix from config file
+PREFIX=$(grep '^prefix:' config/config.yaml | awk '{print $2}')
+
+cd results/${PREFIX}/
+
+multiqc --filename multiqc_report -o multiqc -f prokka/ busco/ quast/ 
+
