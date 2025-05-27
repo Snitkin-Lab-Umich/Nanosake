@@ -2,16 +2,16 @@
 
 # Relative path where your samples are found
 # Don't change this
-samples: config/samples.tsv
+samples: config/samples.csv
 
 # Change this to the absolute path of your 
 # nanopore long reads and illumina short reads folders 
-long_reads: /nfs/turbo/umms-esnitkin/Project_ONT/Analysis/2021_11_30_ONT_snakemake/test_data/guppy_demultiplex/20210107_2213_MN35107_FAO13840_83e8e224
-short_reads: /nfs/esnitkin/Project_KPC_LTACH/Sequence_data/fastq/2017_12_01_KPC_HGT/Final_fastq
+long_reads: /nfs/turbo/umms-esnitkin/Github/test_data/hybrid_assembler/ont_clean_fastq_qc_pass
+trimmed_reads: /nfs/turbo/umms-esnitkin/Github/test_data/hybrid_assembler/illumina_clean_fastq_qc_pass
 
 # Directory prefix where the outputs will be saved to
 # Rename this to your preferred naming convention
-prefix: 2024_05_22_Nanosake_Project_Test
+prefix: 2025_05_27_Project_MDHHS_genomics_Nanosake
 
 # Change to genome size of your organism of interest
 genome_size: 5m
@@ -32,7 +32,7 @@ flye_options: --plasmids --trestle --debug
 # Change according to your sequence type
 # If your adapter file is not present in the adapter directory, 
 # Please add the appropriate file to the adapters folder
-adapter_file: config/adapters/NexteraPE-PE.fa
+adapter_file: config/adapters/combined_Adaptors.fa
 seed_mismatches: 2
 palindrome_clipthreshold: 30
 simple_clipthreshold: 10
