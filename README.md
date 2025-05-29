@@ -3,8 +3,6 @@ A Snakemake workflow to perform hybrid assembly using cleaned and trimmed Illumi
 
 ## Summary
 
-The Nanosake workflow can be split into two parts based on the type of data it uses first to assemble the reads (Long reads Flye assembly vs Hybrid Unicycler assembly)
-
 In short, it performs the following steps:
 
 - Assemble cleaned filtlong nanopore reads with [Flye](https://github.com/fenderglass/Flye) (v2.9.5) assembler.
