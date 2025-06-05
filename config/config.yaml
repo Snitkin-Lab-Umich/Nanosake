@@ -11,7 +11,7 @@ trimmed_reads: /nfs/turbo/umms-esnitkin/Github/test_data/hybrid_assembler/illumi
 
 # Directory prefix where the outputs will be saved to
 # Rename this to your preferred naming convention
-prefix: 2025_05_27_Project_MDHHS_genomics_Nanosake
+prefix: 2025-05-27_Project_MDHHS_genomics_Nanosake
 
 # Change to genome size of your organism of interest
 genome_size: 5m
