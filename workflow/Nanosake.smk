@@ -237,13 +237,13 @@ rule busco:
         # Run BUSCO on polypolish assembly with retry
         for i in {{1..2}}; do
             echo "Attempt $i: Running BUSCO on polypolish assembly"
-            busco -f -i {input.flye_medaka_polypolish} -m genome -l bacteria_odb12 -o {params.busco_outpath}.flye_medaka_polypolish && break || echo "BUSCO medaka attempt $i failed"
+            busco -f -i {input.flye_medaka_polypolish} -m genome -l bacteria_odb12 -o {params.busco_outpath}.flye_medaka_polypolish && break || echo "BUSCO attempt $i failed"
             sleep 10
         done
 
         # Check if BUSCO medaka succeeded
         if [ ! -f {params.busco_outpath}.flye_medaka_polypolish/{params.flye_medaka_polypolish_busco_out} ]; then
-            echo "BUSCO medaka failed after 2 attempts" >&2
+            echo "BUSCO failed after 2 attempts" >&2
             exit 1
         fi
 
