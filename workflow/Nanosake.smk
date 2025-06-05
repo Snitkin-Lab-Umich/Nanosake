@@ -241,7 +241,7 @@ rule busco:
             sleep 10
         done
 
-        # Check if BUSCO medaka succeeded
+        # Check if BUSCO polypolish succeeded
         if [ ! -f {params.busco_outpath}.flye_medaka_polypolish/{params.flye_medaka_polypolish_busco_out} ]; then
             echo "BUSCO failed after 2 attempts" >&2
             exit 1
