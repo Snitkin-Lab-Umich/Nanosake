@@ -22,6 +22,7 @@ rule all:
         flye_circ_assembly = expand("results/{prefix}/flye/{combination}_flye_circ.fasta", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX, combination=COMBINATION),
         medaka_out = expand("results/{prefix}/medaka/{combination}_medaka.fasta", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX, combination=COMBINATION),
         polypolish = expand("results/{prefix}/polypolish/{combination}_flye_medaka_polypolish.fasta", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX, combination=COMBINATION),
+        flye_medaka_polypolish_wo_circ = expand("results/{prefix}/polypolish/{combination}_flye_medaka_polypolish_wo_circ.fasta", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX, combination=COMBINATION),
         prokka = expand("results/{prefix}/prokka/{combination}_flye_medaka_polypolish.gff", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX,combination=COMBINATION),
         quast_out = expand("results/{prefix}/quast/{combination}_flye_medaka_polypolish/report.txt", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX, combination=COMBINATION),
         busco_out = expand("results/{prefix}/busco/{combination}.flye_medaka_polypolish/busco_flye_medaka_polypolish.txt", barcode=BARCODE, sample=SAMPLE, prefix=PREFIX, combination=COMBINATION),
@@ -146,6 +147,7 @@ rule polypolish:
         filtersam1 = f"results/{{prefix}}/polypolish/{{barcode}}/{{sample}}_filtered_1.sam",
         filtersam2 = f"results/{{prefix}}/polypolish/{{barcode}}/{{sample}}_filtered_2.sam",
         flye_medaka_polypolish = f"results/{{prefix}}/polypolish/{{barcode}}/{{sample}}/{{sample}}_flye_medaka_polypolish.fasta",
+        flye_medaka_polypolish_wo_circ = f"results/{{prefix}}/polypolish/{{barcode}}/{{sample}}/{{sample}}_flye_medaka_polypolish_wo_circ.fasta",
     params:
         threads = config["ncores"],
     #conda:
@@ -156,11 +158,16 @@ rule polypolish:
     #    "Bioinformatics",
     #    "polypolish"
     shell:
-        "polypolish filter --in1 {input.samout_1} --in2 {input.samout_2} --out1 {output.filtersam1} --out2 {output.filtersam2} && polypolish polish {input.medaka_assembly} {output.filtersam1} {output.filtersam2} > {output.flye_medaka_polypolish}"
+        """
+        polypolish filter --in1 {input.samout_1} --in2 {input.samout_2} --out1 {output.filtersam1} --out2 {output.filtersam2} && \
+        polypolish polish {input.medaka_assembly} {output.filtersam1} {output.filtersam2} > {output.flye_medaka_polypolish} && \
+        cp {output.flye_medaka_polypolish} {output.flye_medaka_polypolish_wo_circ} && \
+        sed -i 's/;.*//' {output.flye_medaka_polypolish_wo_circ}
+        """
      
 rule prokka:
     input:
-        flye_medaka_polypolish = f"results/{{prefix}}/polypolish/{{barcode}}/{{sample}}/{{sample}}_flye_medaka_polypolish.fasta",
+        flye_medaka_polypolish_wo_circ = f"results/{{prefix}}/polypolish/{{barcode}}/{{sample}}/{{sample}}_flye_medaka_polypolish_wo_circ.fasta",
     output:
         flye_medaka_polypolish_annotation = f"results/{{prefix}}/prokka/{{barcode}}/{{sample}}/{{sample}}_flye_medaka_polypolish.gff",
     params:
@@ -177,7 +184,7 @@ rule prokka:
     #    "prokka"
     shell:
         """
-        prokka {params.options} --strain {params.prefix} -outdir {params.prokka_dir} -prefix {params.prefix}_flye_medaka_polypolish {input.flye_medaka_polypolish} 
+        prokka {params.options} --strain {params.prefix} -outdir {params.prokka_dir} -prefix {params.prefix}_flye_medaka_polypolish {input.flye_medaka_polypolish_wo_circ} 
         """
 
 rule quast:
@@ -225,7 +232,22 @@ rule busco:
     #    "busco"
     shell:
         """
-        busco -f -i {input.flye_medaka_polypolish} -m genome -l bacteria_odb12 -o {params.busco_outpath}.flye_medaka_polypolish && 
+        set -e
+
+        # Run BUSCO on polypolish assembly with retry
+        for i in {{1..2}}; do
+            echo "Attempt $i: Running BUSCO on polypolish assembly"
+            busco -f -i {input.flye_medaka_polypolish} -m genome -l bacteria_odb12 -o {params.busco_outpath}.flye_medaka_polypolish && break || echo "BUSCO medaka attempt $i failed"
+            sleep 10
+        done
+
+        # Check if BUSCO medaka succeeded
+        if [ ! -f {params.busco_outpath}.flye_medaka_polypolish/{params.flye_medaka_polypolish_busco_out} ]; then
+            echo "BUSCO medaka failed after 2 attempts" >&2
+            exit 1
+        fi
+
         cp {params.busco_outpath}.flye_medaka_polypolish/{params.flye_medaka_polypolish_busco_out} {params.busco_outpath}.flye_medaka_polypolish/busco_flye_medaka_polypolish.txt
+        
         """
 
