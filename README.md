@@ -91,11 +91,11 @@ snakemake -s workflow/Nanosake.smk -p --configfile config/config.yaml --cores al
 
 ```
 
-snakemake -s workflow/Nanosake.smk -p --use-singularity -j 999 --cluster "sbatch -A {cluster.account} -p {cluster.partition} -N {cluster.nodes}  -t {cluster.walltime} -c {cluster.procs} --mem-per-cpu {cluster.pmem} --output=slurm_out/slurm-%j.out" --cluster-config config/cluster.json --configfile config/confi.yaml --latency-wait 1000 --nolock 
+snakemake -s workflow/Nanosake.smk -p --use-singularity -j 999 --cluster "sbatch -A {cluster.account} -p {cluster.partition} -N {cluster.nodes}  -t {cluster.walltime} -c {cluster.procs} --mem-per-cpu {cluster.pmem} --output=slurm_out/slurm-%j.out" --cluster-config config/cluster.json --configfile config/config.yaml --latency-wait 1000 --nolock 
 
 ```
 
-> Submit nanoQC as a batch job on Great Lakes. 
+> Submit Nanosake as a batch job on Great Lakes. 
 
 Change these `SBATCH` commands: `--job-name` to a more descriptive name, `--mail-user` to your email address, `--time` depending on the number of samples you have (should be more than what you specified in `cluster.json`). Feel free to make changes to the other flags if you are comfortable doing so. Once you have made the necessary changes, save the below script as `Nanosake.sbat`. Don't forget to submit nanoQC to Slurm! `sbatch Nanosake.sbat`.
 
