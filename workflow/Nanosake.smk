@@ -162,7 +162,7 @@ rule polypolish:
         polypolish filter --in1 {input.samout_1} --in2 {input.samout_2} --out1 {output.filtersam1} --out2 {output.filtersam2} && \
         polypolish polish {input.medaka_assembly} {output.filtersam1} {output.filtersam2} > {output.flye_medaka_polypolish} && \
         cp {output.flye_medaka_polypolish} {output.flye_medaka_polypolish_wo_circ} && \
-        sed -i 's/;.*//' {output.flye_medaka_polypolish_wo_circ}
+        sed -i -e 's/;.*//' -e 's/^>hybrid/>h/' -e 's/_contig_/_c_/' {output.flye_medaka_polypolish_wo_circ}
         """
      
 rule prokka:
@@ -237,13 +237,13 @@ rule busco:
         # Run BUSCO on polypolish assembly with retry
         for i in {{1..2}}; do
             echo "Attempt $i: Running BUSCO on polypolish assembly"
-            busco -f -i {input.flye_medaka_polypolish} -m genome -l bacteria_odb12 -o {params.busco_outpath}.flye_medaka_polypolish && break || echo "BUSCO attempt $i failed"
+            busco -f -i {input.flye_medaka_polypolish} -m genome -l bacteria_odb12 -o {params.busco_outpath}.flye_medaka_polypolish && break || echo "BUSCO medaka attempt $i failed"
             sleep 10
         done
 
-        # Check if BUSCO polypolish succeeded
+        # Check if BUSCO medaka succeeded
         if [ ! -f {params.busco_outpath}.flye_medaka_polypolish/{params.flye_medaka_polypolish_busco_out} ]; then
-            echo "BUSCO failed after 2 attempts" >&2
+            echo "BUSCO medaka failed after 2 attempts" >&2
             exit 1
         fi
 
